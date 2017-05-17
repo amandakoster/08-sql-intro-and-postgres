@@ -15,12 +15,14 @@ const app = express();
 // Your url may require that it's composed of additional information including user and password
 // const conString = 'postgres://USER:PASSWORD@HOST:PORT/DBNAME';
 const conString = 'postgres://localhost:5432';
+// linux
+// const conString = 'postgres://dingo:dingodb@localhost:5432/kilovolt';
 
 // TODO: Our pg module has a Client constructor that accepts one argument: the conString we just defined.
 //       This is how it knows the URL and, for Windows and Linux users, our username and password for our
 //       database when client.connect is called on line 26. Thus, we need to pass our conString into our
 //       pg.Client() call.
-const client = new pg.Client('something needs to go here... read the instructions above!');
+const client = new pg.Client(conString);
 
 // REVIEW: Use the client object to connect to our DB.
 client.connect();
@@ -35,7 +37,7 @@ app.use(express.static('./public'));
 // REVIEW: Routes for requesting HTML resources
 app.get('/new', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
-  // Put your response here...
+  // #5 - response, this particular line doesn't interact with another method. It is only displaying the new.html file which holds a form. It is not until the user takes another action (input form fields and clicks submit) that it will actually invoke any other methods. You would be READING the new.html file but nothing from the database.   
   response.sendFile('new.html', {root: './public'});
 });
 
