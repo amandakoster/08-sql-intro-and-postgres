@@ -111,7 +111,7 @@ app.delete('/articles/:id', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
   // Put your response here...
   //ANSWER: #3. This invoke article.prototype.deleteRecord() based on the id that is inputted. This is a DESTROY part of CRUD.
-    `DELETE FROM articles WHERE article_id=$1;`,
+  client.query(`DELETE FROM articles WHERE article_id=$1;`,
     [request.params.id]
   )
   .then(function() {
@@ -144,12 +144,11 @@ app.listen(PORT, function() {
   console.log(`Server started on port ${PORT}!`);
 });
 
-
 //////// ** DATABASE LOADER ** ////////
 ////////////////////////////////////////
 function loadArticles() {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
-  //ANSWER: 
+  //ANSWER: This is a result/#4 because it will result in something. If postgress has 0 data, then it pulls JSON file and inserts the values into the 'articles' table. It is 'CREATE' in CRUD. This is invoked by teh loadDB function.
   client.query('SELECT COUNT(*) FROM articles')
   .then(result => {
     // REVIEW: result.rows is an array of objects that Postgres returns as a response to a query.
@@ -176,6 +175,7 @@ function loadArticles() {
 function loadDB() {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
   // Put your response here...
+  //ANSWER: This is a #4. If the 'articles' table does not exist then create one and load the table.It is 'CREATE' in CRUD. loadDB() invokes itself.
   client.query(`
     CREATE TABLE IF NOT EXISTS articles (
       article_id SERIAL PRIMARY KEY,
