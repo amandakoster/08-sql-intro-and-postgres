@@ -57,7 +57,7 @@ app.get('/articles', function(request, response) {
 
 app.post('/articles', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
-  //ANSWER: #3, When a user inputs new data in the form on new.html and hit's the submit button, it will invoke the function article.insertRecord() that lies in article.js and input the values to create another Article.prototype instance and console logs the data. This is a CREATE part of the CRUD. 
+  //ANSWER: #3, When a user inputs new data in the form on new.html and hit's the submit button, it will invoke the function article.insertRecord() that lies in article.js and input the values to create another Article.prototype instance and console logs the data. This is a CREATE part of the CRUD.
   client.query(
     `INSERT INTO
     articles(title, author, "authorUrl", category, "publishedOn", body)
@@ -82,7 +82,7 @@ app.post('/articles', function(request, response) {
 
 app.put('/articles/:id', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
-  // Put your response here...
+  //ANSWER: #3, the server is talking to the database to update a record. This is being interacted with article.prototype.updateRecord on article.js. This will update the specific record values to the fields associated with the inputted id in the url. This is UPDATE part of CRUD.
   client.query(
     `UPDATE articles
     SET
@@ -110,7 +110,7 @@ app.put('/articles/:id', function(request, response) {
 app.delete('/articles/:id', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
   // Put your response here...
-  client.query(
+  //ANSWER: #3. This invoke article.prototype.deleteRecord() based on the id that is inputted. This is a DESTROY part of CRUD.
     `DELETE FROM articles WHERE article_id=$1;`,
     [request.params.id]
   )
