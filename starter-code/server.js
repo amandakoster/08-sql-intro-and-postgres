@@ -37,7 +37,7 @@ app.use(express.static('./public'));
 // REVIEW: Routes for requesting HTML resources
 app.get('/new', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
-  // #5 - response, this particular line doesn't interact with another method. It is only displaying the new.html file which holds a form. It is not until the user takes another action (input form fields and clicks submit) that it will actually invoke any other methods. You would be READING the new.html file but nothing from the database.   
+  // #5 - response, this particular line doesn't interact with another method. It is only displaying the new.html file which holds a form. It is not until the user takes another action (input form fields and clicks submit) that it will actually invoke any other methods. You would be READING the new.html file but nothing from the database.
   response.sendFile('new.html', {root: './public'});
 });
 
@@ -45,7 +45,7 @@ app.get('/new', function(request, response) {
 // REVIEW: Routes for making API calls to use CRUD Operations on our database
 app.get('/articles', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
-  // Put your response here...
+  //ANSWER: #3 - query, the line above is the #2 request from the user and this next line tells the server to query the database for the SQL argument. Line 45 Article.fetchAll is being interacted with. It then invokes the .loadALL method which then sorts by pubslished and runs through the constructor function Articles and then pushes it into the empty Articles.all[]. Although the articles are being created the user input is only displaying READING and not creating anything new.
   client.query('SELECT * FROM articles')
   .then(function(result) {
     response.send(result.rows);
