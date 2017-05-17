@@ -3,6 +3,7 @@
 // TODO: Install and require the NPM Postgres package 'pg' into your server.js, and ensure that it is then listed as a dependency in your package.json
 const fs = require('fs');
 const express = require('express');
+const pg = require('pg');
 
 // REVIEW: Require in body-parser for post requests in our server. If you want to know more about what this does, read the docs!
 const bodyParser = require('body-parser');
@@ -14,12 +15,14 @@ const app = express();
 // Your url may require that it's composed of additional information including user and password
 // const conString = 'postgres://USER:PASSWORD@HOST:PORT/DBNAME';
 const conString = 'postgres://localhost:5432';
+// linux
+// const conString = 'postgres://dingo:dingodb@localhost:5432/kilovolt';
 
 // TODO: Our pg module has a Client constructor that accepts one argument: the conString we just defined.
 //       This is how it knows the URL and, for Windows and Linux users, our username and password for our
 //       database when client.connect is called on line 26. Thus, we need to pass our conString into our
 //       pg.Client() call.
-const client = new pg.Client('something needs to go here... read the instructions above!');
+const client = new pg.Client(conString);
 
 // REVIEW: Use the client object to connect to our DB.
 client.connect();
@@ -34,7 +37,7 @@ app.use(express.static('./public'));
 // REVIEW: Routes for requesting HTML resources
 app.get('/new', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
-  // Put your response here...
+  // #5 - response, this particular line doesn't interact with another method. It is only displaying the new.html file which holds a form. It is not until the user takes another action (input form fields and clicks submit) that it will actually invoke any other methods. You would be READING the new.html file but nothing from the database.
   response.sendFile('new.html', {root: './public'});
 });
 
@@ -42,7 +45,7 @@ app.get('/new', function(request, response) {
 // REVIEW: Routes for making API calls to use CRUD Operations on our database
 app.get('/articles', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
-  // Put your response here...
+  //ANSWER: #3 - query, the line above is the #2 request from the user and this next line tells the server to query the database for the SQL argument. Line 45 Article.fetchAll is being interacted with. It then invokes the .loadALL method which then sorts by pubslished and runs through the constructor function Articles and then pushes it into the empty Articles.all[]. Although the articles are being created the user input is only displaying READING and not creating anything new.
   client.query('SELECT * FROM articles')
   .then(function(result) {
     response.send(result.rows);
@@ -54,7 +57,7 @@ app.get('/articles', function(request, response) {
 
 app.post('/articles', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
-  // Put your response here...
+  //ANSWER: #3, When a user inputs new data in the form on new.html and hit's the submit button, it will invoke the function article.insertRecord() that lies in article.js and input the values to create another Article.prototype instance and console logs the data. This is a CREATE part of the CRUD.
   client.query(
     `INSERT INTO
     articles(title, author, "authorUrl", category, "publishedOn", body)
@@ -79,7 +82,7 @@ app.post('/articles', function(request, response) {
 
 app.put('/articles/:id', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
-  // Put your response here...
+  //ANSWER: #3, the server is talking to the database to update a record. This is being interacted with article.prototype.updateRecord on article.js. This will update the specific record values to the fields associated with the inputted id in the url. This is UPDATE part of CRUD.
   client.query(
     `UPDATE articles
     SET
@@ -107,7 +110,7 @@ app.put('/articles/:id', function(request, response) {
 app.delete('/articles/:id', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
   // Put your response here...
-  client.query(
+  //ANSWER: #3. This invoke article.prototype.deleteRecord() based on the id that is inputted. This is a DESTROY part of CRUD.
     `DELETE FROM articles WHERE article_id=$1;`,
     [request.params.id]
   )
@@ -121,7 +124,7 @@ app.delete('/articles/:id', function(request, response) {
 
 app.delete('/articles', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
-  // Put your response here...
+  //ANSWER: #3, This will invoke the Article.truncateTable() on line 58 of the article.js file. This is a DESTROY part of the CRUD.
   client.query(
     'DELETE FROM articles;'
   )
@@ -134,7 +137,7 @@ app.delete('/articles', function(request, response) {
 });
 
 // COMMENT: What is this function invocation doing?
-// Put your response here...
+//ANSWER: Creates the table if it doesn't already exist. If successful it will run the loadALL() function which you can read on line 48 of server.js.
 loadDB();
 
 app.listen(PORT, function() {
@@ -146,7 +149,7 @@ app.listen(PORT, function() {
 ////////////////////////////////////////
 function loadArticles() {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
-  // Put your response here...
+  //ANSWER: 
   client.query('SELECT COUNT(*) FROM articles')
   .then(result => {
     // REVIEW: result.rows is an array of objects that Postgres returns as a response to a query.
